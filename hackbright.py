@@ -35,7 +35,8 @@ def make_new_student(first_name, last_name, github):
     db_cursor.execute(QUERY, (first_name, last_name, github))
     db_connection.commit()
     print "Successfully added student: %s %s" % (first_name, last_name)
-
+    # return "ADDED"
+    
 
 def get_project_by_title(title):
     """Given a project title, print information about the project."""
