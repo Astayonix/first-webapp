@@ -9,7 +9,6 @@ import sqlite3
 db_connection = sqlite3.connect("hackbright.db", check_same_thread=False)
 db_cursor = db_connection.cursor()
 
-
 def get_student_by_github(github):
     """Given a github account name, print information about the matching student."""
 
@@ -23,7 +22,6 @@ def get_student_by_github(github):
     print "Student: %s %s\nGithub account: %s" % (first, last, github)
     return (first, last, github)
 
-
 def make_new_student(first_name, last_name, github):
     """Add a new student and print confirmation.
 
@@ -36,7 +34,6 @@ def make_new_student(first_name, last_name, github):
     db_connection.commit()
     print "Successfully added student: %s %s" % (first_name, last_name)
     # return "ADDED"
-    
 
 def get_project_by_title(title):
     """Given a project title, print information about the project."""
@@ -47,9 +44,8 @@ def get_project_by_title(title):
         WHERE title = ?
         """
     db_cursor.execute(QUERY, (title,))
-    row = db_cursor.fetchone()
-    print "Title: %s\nDescription: %s\nMax Grade: %d" % row
-
+    title, description, grade = db_cursor.fetchone()
+    return title, description, grade
 
 def get_grade_by_github_title(github, title):
     """Print grade student received for a project."""
@@ -65,7 +61,6 @@ def get_grade_by_github_title(github, title):
     print "Student %s in project %s received grade of %s" % (
         github, title, row[0])
 
-
 def assign_grade(github, title, grade):
     """Assign a student a grade on an assignment and print a confirmation."""
 
@@ -76,6 +71,15 @@ def assign_grade(github, title, grade):
     print "Successfully assigned grade of %s for %s in %s" % (
         grade, github, title)
 
+def get_grades(student_github):
+    QUERY = """
+        SELECT project_title, grade
+        FROM Grades
+        WHERE student_github = ?
+        """
+    db_cursor.execute(QUERY, (student_github,))
+    output = db_cursor.fetchall()
+    return output
 
 def handle_input():
     """Main loop.
@@ -110,7 +114,6 @@ def handle_input():
         elif command == "assign_grade":
             github, title, grade = args
             assign_grade(github, title, grade)
-
 
 if __name__ == "__main__":
     handle_input()
